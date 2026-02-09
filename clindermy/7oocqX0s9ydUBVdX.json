@@ -1,0 +1,367 @@
+{
+  "createdAt": "2025-11-07T15:54:56.430Z",
+  "updatedAt": "2025-11-24T22:43:18.118Z",
+  "id": "7oocqX0s9ydUBVdX",
+  "name": "[Projeto] [Ferramenta] - Sequência de criação de Lead no Coda + LP",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        -1584
+      ],
+      "id": "caecdb98-9ec6-4627-b73a-b1f43f66acf6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4801cced-99f1-44d9-adcf-5a1bfeb37076",
+              "name": "Empresa",
+              "value": "Pixeo Business",
+              "type": "string"
+            },
+            {
+              "id": "8c5b073e-1037-49c0-9cc2-392ca4ec8382",
+              "name": "Contacts",
+              "value": "={{ $json.Produto }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -1776
+      ],
+      "id": "08482cab-ee64-40bb-8a0c-0a23837eed76",
+      "name": "Dados Empresa"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4801cced-99f1-44d9-adcf-5a1bfeb37076",
+              "name": "Nome",
+              "value": "João Reis",
+              "type": "string"
+            },
+            {
+              "id": "8c5b073e-1037-49c0-9cc2-392ca4ec8382",
+              "name": "Telefone",
+              "value": "553899225622",
+              "type": "string"
+            },
+            {
+              "id": "ea49cf2e-55a4-4d83-9f5f-dd8ed5ea9142",
+              "name": "Empresa",
+              "value": "Pixeo Business",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -1584
+      ],
+      "id": "a683dee2-602e-4d57-9f2e-d76c809cdee2",
+      "name": "Dados Contato"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4801cced-99f1-44d9-adcf-5a1bfeb37076",
+              "name": "Telefone",
+              "value": "553899225622",
+              "type": "string"
+            },
+            {
+              "id": "d31b10e0-a954-4de3-9d28-62de53bb163f",
+              "name": "Produtos",
+              "value": "Marketing Digital",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -1392
+      ],
+      "id": "c3d24255-b348-4425-8fcc-82b7923ba228",
+      "name": "Dados Oportunidade"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -1776
+      ],
+      "id": "2d2ac4f3-2a5b-456c-be78-986599b6075d",
+      "name": "Limit B"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -1584
+      ],
+      "id": "8d4ba7aa-4d57-48ae-b764-67358d2218cc",
+      "name": "Limit C"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -1392
+      ],
+      "id": "95e021ca-de9d-475c-b785-eee646ae073b",
+      "name": "Limit O"
+    },
+    {
+      "parameters": {
+        "docId": "jvOPW8e52B",
+        "tableId": "grid-9uEBa9jc4v",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.coda",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -1776
+      ],
+      "id": "231f1209-64dd-489b-ad27-87c386d11daa",
+      "name": "Create Empresa",
+      "credentials": {
+        "codaApi": {
+          "id": "HHiszAdWk8hD2KJ8",
+          "name": "Coda account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "docId": "jvOPW8e52B",
+        "tableId": "grid-ujpT3qMh-f",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.coda",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -1584
+      ],
+      "id": "e5871127-7a64-49eb-9bc9-363682f51a5f",
+      "name": "Create Contact",
+      "credentials": {
+        "codaApi": {
+          "id": "HHiszAdWk8hD2KJ8",
+          "name": "Coda account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "docId": "jvOPW8e52B",
+        "tableId": "grid-gGc1iMU8I4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.coda",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -1392
+      ],
+      "id": "88124855-f84d-4904-be9b-8b4f341ea070",
+      "name": "Create opportunitie",
+      "credentials": {
+        "codaApi": {
+          "id": "HHiszAdWk8hD2KJ8",
+          "name": "Coda account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Dados Contato",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Dados Empresa",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Dados Oportunidade",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados Empresa": {
+      "main": [
+        [
+          {
+            "node": "Limit B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados Contato": {
+      "main": [
+        [
+          {
+            "node": "Limit C",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados Oportunidade": {
+      "main": [
+        [
+          {
+            "node": "Limit O",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit B": {
+      "main": [
+        [
+          {
+            "node": "Create Empresa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit C": {
+      "main": [
+        [
+          {
+            "node": "Create Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit O": {
+      "main": [
+        [
+          {
+            "node": "Create opportunitie",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Empresa": {
+      "main": [
+        []
+      ]
+    },
+    "Create Contact": {
+      "main": [
+        []
+      ]
+    },
+    "Create opportunitie": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "name": "João",
+          "telefone": "553899225622"
+        }
+      },
+      {
+        "json": {
+          "Empresa": "Pixeo Marketing",
+          "Faturamento": "100k-150k"
+        }
+      },
+      {
+        "json": {
+          "Produto": "Marketing Digital"
+        }
+      }
+    ]
+  },
+  "versionId": "b65bb641-1198-45d3-99e7-c9d6668f7fe2",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-11-07T15:54:56.430Z",
+      "updatedAt": "2025-11-07T15:54:56.430Z",
+      "role": "workflow:owner",
+      "workflowId": "7oocqX0s9ydUBVdX",
+      "projectId": "USvPwHa2HxzGAWnT"
+    }
+  ],
+  "tags": [
+    {
+      "createdAt": "2025-11-18T18:47:49.646Z",
+      "updatedAt": "2025-11-18T18:47:49.646Z",
+      "id": "TH7XuT39hzQSq0U6",
+      "name": "CRM"
+    },
+    {
+      "createdAt": "2025-11-18T18:47:52.372Z",
+      "updatedAt": "2025-11-18T18:47:52.372Z",
+      "id": "Oy6odNbCfKMBmamL",
+      "name": "Coda"
+    }
+  ]
+}
