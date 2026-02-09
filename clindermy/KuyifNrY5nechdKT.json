@@ -1,0 +1,1131 @@
+{
+  "createdAt": "2025-03-19T21:41:45.408Z",
+  "updatedAt": "2026-01-21T15:01:18.159Z",
+  "id": "KuyifNrY5nechdKT",
+  "name": "Fluxo - Aviso de aniversários",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b9d61270-1cd6-48be-aedb-c5b9ec885ee9",
+              "leftValue": "={{ $json.property_data_aviso.start.toDateTime().format('yyyy-MM-dd') }}",
+              "rightValue": "={{ $now.format('yyyy-MM-dd') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "5169dad0-b136-4191-a973-aaca94611576",
+              "leftValue": "={{ $json.property_cliente_ativo_r[0] }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        960
+      ],
+      "id": "d7b8e88e-df0c-49c0-a4aa-d3c89ec7a323",
+      "name": "A data de aniversário é hoje?"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -240,
+        960
+      ],
+      "id": "3951c672-c040-4a5c-9f34-ebc956d369e5",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        352,
+        752
+      ],
+      "id": "1cb3a45f-7d33-42c6-8256-3424e693f6f1",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        864
+      ],
+      "id": "53209249-1ffd-4322-8284-74bbbb12ef4d",
+      "name": "Wait",
+      "webhookId": "75a78e9a-a9fd-4f75-a204-8be561a31a90"
+    },
+    {
+      "parameters": {
+        "content": "## VERIFICA SE É ANIVERSÁRIO DO FUNCIONÁRIO E CRIA CONTEÚDO PARA O DIA DO ANIVERSÁRIO DELE.\n",
+        "height": 1360,
+        "width": 2420
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        320
+      ],
+      "id": "b9061d91-f82e-418c-b439-e4ca27117976",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "14c16533-6e91-80dd-82e9-dcff8fd2f14c",
+          "mode": "list",
+          "cachedResultName": "DB de Aniversariantes",
+          "cachedResultUrl": "https://www.notion.so/14c165336e9180dd82e9dcff8fd2f14c"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -64,
+        960
+      ],
+      "id": "a3dd8906-8f55-409b-9355-26a2b544110e",
+      "name": "Lista aniversariantes em DB de aniversariantes",
+      "credentials": {
+        "notionApi": {
+          "id": "wABFptt7sxWQb17b",
+          "name": "[Pixeo holding]"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=#Informações importantes:\nnome do aniversariante: {{ $('Lista aniversariantes em DB de aniversariantes').item.json.property_nome }}\narroba do aniversariante: {{ $('A data de aniversário é hoje?').item.json.property_instagram }}\nempresa: {{ $('Lista aniversariantes em DB de aniversariantes').item.json.property_business_name[0] }}\n\n\nVocê é um social media criador de conteúdo, com um único objetivo. Fazer posts de aniversário.\n\nVocê deve criar conteúdo para o designer criar o criativo.\n\nvocê deve entregar Titulo do criativo com A felicitação e o Nome. Exemplo: Parabéns, Ana.\n\n#Corpo da publicação\nEsse corpo é que sera utilizado para montar o criativo, então não faças textos muito grandes, o arquivo tera 1350x1080px, no corpo sera uma mensagem de felicitação e assine com o nome da empresa\n\n#leganda: Crie a legenda que irá na postagem do instagram, Felicitando o aniversariante e avisando sobre o aniversário dele, e demonstre carinho e respeito de uma forma profissional. Coloque rashtags e emojis. Coloque sempre na frente do nome do aniversariante e o arroba do aniversariante, caso o aniversariante nao tenha, então nao coloque, Coloque somente o nome. \n\nMe retorne:\n\ntitulo_criativo: Aqui deve ir o titulo\ncorpo_criativo: Aqui o corpo\nlegenda_criativo: Aqui a legenda"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        528,
+        608
+      ],
+      "id": "12022269-7407-4727-886b-97be664247ab",
+      "name": "Gera o criativo",
+      "credentials": {
+        "openAiApi": {
+          "id": "edKvFZ4Je84J2ttE",
+          "name": "openai - pixeo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Verifica os aniversariantes e envia no grupo de avisos",
+        "height": 700,
+        "width": 1260,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        448
+      ],
+      "id": "f7ff1307-79ff-4f85-8b74-1fc0a89babe8",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Lista aniversariantes em DB de aniversariantes').item.json.property_foto_aniversariante[0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1328,
+        592
+      ],
+      "id": "2c155333-5ab6-4437-834c-f6a7f2d2f24f",
+      "name": "Baixa as imagens"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.baserow.io/api/user-files/upload-file/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token zXN9lFRoIjDR02BfU21any3QdjMBiHCc"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1488,
+        592
+      ],
+      "id": "625111b3-e8fa-40d5-bed9-4b9b5bca16f5",
+      "name": "Envia imagem para o baserow [aimaze]"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "13216533-6e91-8032-b555-ec9affaf6ac9",
+          "mode": "list",
+          "cachedResultName": "DB de Creative Main",
+          "cachedResultUrl": "https://www.notion.so/132165336e918032b555ec9affaf6ac9"
+        },
+        "title": "Publicação 🎂🎉",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Título do Criativo|rich_text",
+              "textContent": "={{ $('Gera o criativo').item.json.message.content.titulo_criativo }}"
+            },
+            {
+              "key": "Corpo do Criativo|rich_text",
+              "textContent": "={{ $('Gera o criativo').item.json.message.content.corpo_criativo }}"
+            },
+            {
+              "key": "Legenda do Criativo|rich_text",
+              "textContent": "={{ $('Gera o criativo').item.json.message.content.legenda_criativo }}"
+            },
+            {
+              "key": "Data Publicação|date",
+              "date": "={{ $('Lista aniversariantes em DB de aniversariantes').item.json.property_aniversario.start }}"
+            },
+            {
+              "key": "Type|select",
+              "selectValue": "=Stories"
+            },
+            {
+              "key": "Empresa|relation",
+              "relationValue": [
+                "={{ $('Lista aniversariantes em DB de aniversariantes').item.json.property_empresas[0] }}"
+              ]
+            },
+            {
+              "key": "[G]|checkbox",
+              "checkboxValue": "={{ true }}"
+            },
+            {
+              "key": "Seleção [D]|checkbox",
+              "checkboxValue": "={{ true }}"
+            },
+            {
+              "key": "Status|status",
+              "statusValue": "=Ideia Pronta"
+            },
+            {
+              "key": "Sugestão de Imagens|files",
+              "fileUrls": {
+                "fileUrl": [
+                  {
+                    "name": "=foto-{{ $('Lista aniversariantes em DB de aniversariantes').item.json.name }}",
+                    "url": "={{ $json.url }}"
+                  }
+                ]
+              }
+            },
+            {
+              "key": "Criado por|select",
+              "selectValue": "=Pixeo[AI]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1664,
+        592
+      ],
+      "id": "cb52eb22-9947-444c-bda3-74452d1bad6a",
+      "name": "Cria linha no DB de Creative Main",
+      "credentials": {
+        "notionApi": {
+          "id": "wABFptt7sxWQb17b",
+          "name": "[Pixeo holding]"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Cria o post de aniversário e envia para o DB de Creative Main",
+        "height": 700,
+        "width": 900,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        448
+      ],
+      "id": "a75c7eff-39cd-4dd9-95e1-2d6b31172e5c",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "702a75fe-48b3-4f01-9b80-fbe4f6298ea4",
+              "leftValue": "={{ $('Lista aniversariantes em DB de aniversariantes').item.json.property_foto_aniversariante.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1088,
+        608
+      ],
+      "id": "bdb5b062-851b-49df-a597-b8826d29cfb3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "13216533-6e91-8032-b555-ec9affaf6ac9",
+          "mode": "list",
+          "cachedResultName": "DB de Creative Main",
+          "cachedResultUrl": "https://www.notion.so/132165336e918032b555ec9affaf6ac9"
+        },
+        "title": "Publicação 🎂🎉",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Título do Criativo|rich_text",
+              "textContent": "={{ $('Gera o criativo').item.json.message.content.titulo_criativo }}"
+            },
+            {
+              "key": "Corpo do Criativo|rich_text",
+              "textContent": "={{ $('Gera o criativo').item.json.message.content.corpo_criativo }}"
+            },
+            {
+              "key": "Legenda do Criativo|rich_text",
+              "textContent": "={{ $('Gera o criativo').item.json.message.content.legenda_criativo }}"
+            },
+            {
+              "key": "Postagem|date",
+              "date": "={{ $('Lista aniversariantes em DB de aniversariantes').item.json.property_aniversario.start }}"
+            },
+            {
+              "key": "Type|select",
+              "selectValue": "=Stories"
+            },
+            {
+              "key": "Empresa|relation",
+              "relationValue": [
+                "={{ $('Lista aniversariantes em DB de aniversariantes').item.json.property_empresas[0] }}"
+              ]
+            },
+            {
+              "key": "[G]|checkbox",
+              "checkboxValue": "={{ true }}"
+            },
+            {
+              "key": "Seleção [D]|checkbox",
+              "checkboxValue": "={{ true }}"
+            },
+            {
+              "key": "Status|status",
+              "statusValue": "=Ideia Pronta"
+            },
+            {
+              "key": "Criado por|select",
+              "selectValue": "=Pixeo[AI]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1328,
+        864
+      ],
+      "id": "7e293ddb-2c1b-4c51-8f19-6f86ec4a9b08",
+      "name": "Cria linha no DB de Creative Main sem imagem",
+      "credentials": {
+        "notionApi": {
+          "id": "wABFptt7sxWQb17b",
+          "name": "[Pixeo holding]"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "pixeomkt",
+        "remoteJid": "120363407135932152@g.us",
+        "messageText": "=🎂 [Aviso de Aniversário] \n\n📢 Falta pouco!\n📅 Daqui a 7 dias temos\num aniversário especial!\n\n🎈 Aniversariante: {{ $json.name }}\n🗓️ Data do Aniversário: {{ $json.property_aniversario.start }}\n🏢 Empresa: {{ $json.property_business_name[0] }}\n\n--\n\nA arte já foi criada. Confira a sessão idea pronta.",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        512,
+        864
+      ],
+      "id": "1b31127f-db6d-4879-b2d7-b9afd416512f",
+      "name": "Evolution API",
+      "credentials": {
+        "evolutionApi": {
+          "id": "DGotFs3JB8LD2oXX",
+          "name": "wsapi.pixeo.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        64
+      ],
+      "id": "089f17f9-c893-4d9b-befb-5912445fecf5",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Sepere pra mim a data de nascimento e coloque o ano como 2024, separe o nome, o cargo, o arroba do instagram\n\n{{ $json.aniversariantesempresa }}\n\n\nnome: aqui vai o nome e o sobrenome coloque somente o primeiro e o ultimo nome.\ndata_nasc: coloque aqui a data e complete com o ano de 2024 coloque no formato ISO 8601\ncargo:\narroba:"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        32,
+        64
+      ],
+      "id": "d596cbe8-2287-402f-99ad-0d1fd617bf91",
+      "name": "OpenAI3",
+      "credentials": {
+        "openAiApi": {
+          "id": "edKvFZ4Je84J2ttE",
+          "name": "openai - pixeo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "message.content.pessoas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        368,
+        64
+      ],
+      "id": "f42b15ae-f8fb-4eee-b14b-08d7b37ba7d2",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "content": "## Atualizador de aniversariantes\n",
+        "height": 280,
+        "width": 1180,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        0
+      ],
+      "id": "6e116c86-d658-4b97-8234-4322f91ae0b1",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "14c16533-6e91-80dd-82e9-dcff8fd2f14c",
+          "mode": "list",
+          "cachedResultName": "DB de Aniversariantes",
+          "cachedResultUrl": "https://www.notion.so/14c165336e9180dd82e9dcff8fd2f14c"
+        },
+        "title": "={{ $json.nome }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Data de Nascimento|date",
+              "includeTime": false,
+              "date": "={{ $json.data_nasc }}"
+            },
+            {
+              "key": "Cargo|rich_text",
+              "textContent": "={{ $json.cargo }}"
+            },
+            {
+              "key": "Instagram|rich_text",
+              "textContent": "={{ $json.arroba }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        544,
+        64
+      ],
+      "id": "379b6032-dd8d-4bd7-8dde-c835e6a07ffe",
+      "name": "Cria novo aniversariante",
+      "credentials": {
+        "notionApi": {
+          "id": "wABFptt7sxWQb17b",
+          "name": "[Pixeo holding]"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ae961a6b-f9e5-4273-b06d-cfc8ad24307d",
+              "name": "aniversariantesempresa",
+              "value": "=Jackson Arruda – Médico - @arruda_jaks 24/05\nGustavo Alves – Técnico em Enfermagem - @alvesgus_ 01/10\nMatheus Mendes Rego – Médico - 29/06 @_matheusmrego\nArthur César Silveira Freitas -  Médico 16/08\nRobert Willian Pereira de Almeida – Médico -  @robertwalmeida 10/10\nSergio Bernardo Torrico Moscoso – Médico - @drsergiobernardotorrico\nMayra Feitosa de Oliveira – Médico -  @mayrafo",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        64
+      ],
+      "id": "593ce4a6-e421-427e-a1fd-632a9dfc6f9d",
+      "name": "Coloque os contatos aqui"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b9d61270-1cd6-48be-aedb-c5b9ec885ee9",
+              "leftValue": "={{ $json.property_aniversario.start.toDateTime().format('yyyy-MM-dd') }}",
+              "rightValue": "={{ $now.format('yyyy-MM-dd') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "966bdbbd-228f-4c38-a4ee-7e76c362403a",
+              "leftValue": "={{ $('Lista aniversariantes em DB de aniversariantes').item.json.property_cliente_ativo_r[0] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        1264
+      ],
+      "id": "97cf2cf0-910d-41d1-b488-4ac0d9cff3fb",
+      "name": "A data de aniversário é hoje?1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        672,
+        1360
+      ],
+      "id": "bb133413-f9f8-4c28-bb9e-6ffde7e315ad",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1008,
+        1248
+      ],
+      "id": "25971a56-2322-49f4-9130-065b8d825e48",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1648,
+        1360
+      ],
+      "id": "abbffda3-f823-44a8-b754-b6c7bbf3e689",
+      "name": "Wait1",
+      "webhookId": "75a78e9a-a9fd-4f75-a204-8be561a31a90"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "pixeomkt",
+        "remoteJid": "120363407135932152@g.us",
+        "messageText": "=🔥 [Aviso de Aniversário] \n\n📅 Hoje é:\num aniversário especial!\n\n🎈 Aniversariante: {{ $json.name }}\n🗓️ Data do Aniversário: {{ $json.property_aniversario.start }}\n🏢 Empresa: {{ $json.property_business_name[0] }}\n\n--\n\nNão esqueça de postar a arte.",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        1360
+      ],
+      "id": "5fca8669-794e-4b8f-b108-c7ced5346f2f",
+      "name": "Evolution API1",
+      "credentials": {
+        "evolutionApi": {
+          "id": "DGotFs3JB8LD2oXX",
+          "name": "wsapi.pixeo.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Avisa o aniversário no dia.",
+        "height": 420,
+        "width": 1640,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        272,
+        1184
+      ],
+      "typeVersion": 1,
+      "id": "2a0f7e1e-47ce-41f1-aeec-24ad2938fa20",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sendTo": "agenciapixeo@gmail.com",
+        "subject": "=Lembrete de aniversário!| {{ $('A data de aniversário é hoje?1').item.json.name }} | {{ $('Loop Over Items1').item.json.property_business_name[0] }}",
+        "message": "={{ $json.data.message.conversation }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        1360
+      ],
+      "id": "110c3dc9-94ef-4a31-9912-7a3a855bd44f",
+      "name": "Gmail",
+      "webhookId": "fb915ddd-960c-4283-ac24-b4c6cdbfbca8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "51yyc7zbBPWTyuOj",
+          "name": "Gmail agenciapixeo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "agenciapixeo@gmail.com",
+        "subject": "=Lembrete de aniversário!| {{ $('Loop Over Items').item.json.name }} | {{ $('Loop Over Items').item.json.property_business_name[0] }}",
+        "emailType": "text",
+        "message": "={{ $json.data.message.conversation }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        688,
+        864
+      ],
+      "id": "92da9c21-55ee-4a65-a547-83742c4bd124",
+      "name": "Gmail1",
+      "webhookId": "fb915ddd-960c-4283-ac24-b4c6cdbfbca8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "51yyc7zbBPWTyuOj",
+          "name": "Gmail agenciapixeo"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        -224
+      ],
+      "id": "93d586eb-9512-4d91-b7ba-3fe5e24c6e02",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "sendTo": "joaoreiscefet@gmail.com",
+        "subject": "=Aviso de erro!  {{ $json.workflow.name }} | {{ $json.execution.lastNodeExecuted }}",
+        "message": "={{ $json.execution.error.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -208,
+        -224
+      ],
+      "id": "705e20a9-e6d7-475c-859d-70864be41f29",
+      "name": "Gmail2",
+      "webhookId": "8b0c8f46-a34e-4a42-a112-dc8f4486184c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "51yyc7zbBPWTyuOj",
+          "name": "Gmail agenciapixeo"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "A data de aniversário é hoje?": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "A data de aniversário é hoje?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Lista aniversariantes em DB de aniversariantes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Gera o criativo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lista aniversariantes em DB de aniversariantes": {
+      "main": [
+        [
+          {
+            "node": "A data de aniversário é hoje?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gera o criativo": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixa as imagens": {
+      "main": [
+        [
+          {
+            "node": "Envia imagem para o baserow [aimaze]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia imagem para o baserow [aimaze]": {
+      "main": [
+        [
+          {
+            "node": "Cria linha no DB de Creative Main",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Baixa as imagens",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cria linha no DB de Creative Main sem imagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Coloque os contatos aqui",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI3": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Cria novo aniversariante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Coloque os contatos aqui": {
+      "main": [
+        [
+          {
+            "node": "OpenAI3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A data de aniversário é hoje?1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Evolution API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API1": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cria linha no DB de Creative Main": {
+      "main": [
+        []
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-01-21T08:00:59.018-03:00",
+          "Readable date": "January 21st 2026, 8:00:59 am",
+          "Readable time": "8:00:59 am",
+          "Day of week": "Wednesday",
+          "Year": "2026",
+          "Month": "January",
+          "Day of month": "21",
+          "Hour": "08",
+          "Minute": "00",
+          "Second": "59",
+          "Timezone": "America/Sao_Paulo (UTC-03:00)"
+        }
+      }
+    ]
+  },
+  "versionId": "ef62315c-8710-4c95-adb2-7091476fcbf4",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-03-19T21:41:45.408Z",
+      "updatedAt": "2025-03-19T21:41:45.408Z",
+      "role": "workflow:owner",
+      "workflowId": "KuyifNrY5nechdKT",
+      "projectId": "USvPwHa2HxzGAWnT"
+    }
+  ],
+  "tags": [
+    {
+      "createdAt": "2025-03-20T13:51:49.803Z",
+      "updatedAt": "2025-03-20T13:51:49.803Z",
+      "id": "9FkFPw05WWJweXI0",
+      "name": "produção"
+    }
+  ]
+}
